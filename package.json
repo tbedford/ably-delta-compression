@@ -2,15 +2,17 @@
   "name": "test-vcdiff-2",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Tony Bedford",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "@ably/vcdiff-decoder": "^1.0.4",
     "ably": "^1.2.17",
+    "random-words": "^1.1.2",
     "dotenv": "^16.0.0"
   }
 }

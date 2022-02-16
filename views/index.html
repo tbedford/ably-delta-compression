@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="//cdn.ably.io/lib/ably.min-1.js"></script>
+    <script src="//cdn.ably.io/lib/vcdiff-decoder.min-1.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <h1>Ably Delta Conpression Example</h1>
+    <ul>
+      <li><b>Status:</b><p id="status">Hello</p></li>
+      <li><b>dataBlock:</b><p id="dataBlock">Data Block</p></li>
+      <li><b>compressedData:</b><p id="compressedData">compressedData</p></li>
+      <li><b>uncompressedData:</b><p id="uncompressedData">uncompressedData</p></li>
+    </ul>
+
+    <script>
+      const ably = new Ably.Realtime({
+        authUrl: "/auth",
+        plugins: { vcdiff: vcdiffDecoder },
+      });
+
+      ably.connection.on("connecting", () => {
+        document.getElementById("status").innerHTML = "Connecting.";
+      });
+
+      ably.connection.on("connected", () => {
+        document.getElementById("status").innerHTML =
+          "Connected to Ably using Auth server.";
+      });
+
+      const channel = ably.channels.get("ably-data-server", {
+        params: {
+          delta: "vcdiff"
+        }
+      });
+
+      channel.subscribe("dataBlock", (message) => {
+        document.getElementById("dataBlock").innerHTML = message.data;
+        ably.stats({ unit: 'minute' }, (err, resultPage) => {
+          
+          const compressedData = resultPage.items[0].all.messages.data; 
+          const uncompressedData = resultPage.items[0].all.messages.uncompressedData;
+          
+          document.getElementById("compressedData").innerHTML = compressedData;
+          document.getElementById("uncompressedData").innerHTML = uncompressedData;
+          
+          console.log(resultPage.items[0]);     // all stats   
+          console.log(compressedData);
+          console.log(uncompressedData);
+        });
+      });
+      
+    </script>
+  </body>
+</html>
