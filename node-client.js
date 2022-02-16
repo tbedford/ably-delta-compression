@@ -11,7 +11,7 @@ const realtime = new Ably.Realtime({
     log: { level: 4 }
 });
 
-const channel = realtime.channels.get('ably-time-server', {
+const channel = realtime.channels.get('ably-data-server', {
     params: {
         delta: 'vcdiff'
     }
