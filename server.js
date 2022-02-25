@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const randomWords = require('random-words');
-const words = randomWords(400); // create a block of data consisting of 400 random words
 
 require('dotenv').config()
 const key = process.env.API_KEY;
@@ -40,14 +39,36 @@ app.get("/auth", (req, res) => {
   });
 });
 
-function sendDataBlock() {
-  const time = new Date();
-  channel.publish("dataBlock", words + randomWords(2));
-  return;
+const max = 4;  // add or remove up to this number of users
+const initialUsers = 50;
+let usernames = randomWords(initialUsers);
+
+function addUsers(users) {
+  for (let i = 0; i < Math.floor(Math.random() * max) + 1; i++) {
+    users.push(randomWords());
+  }
+}
+
+function removeUsers(users) {
+  for (let i = 0; i < Math.floor(Math.random() * max) + 1; i++) {
+    users.splice(Math.floor(Math.random() * users.length), 1);
+  }
+}
+
+function onlineUsernames(usernames) {
+  removeUsers(usernames);
+  addUsers(usernames);
+  console.log(usernames);
+  console.log('Length: ' + usernames.length);
+  return usernames;
+}
+
+function sendUserList() {
+  channel.publish("userlist", onlineUsernames(usernames));
 }
 
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 
-  setInterval(sendDataBlock, process.env.INTERVAL);
+  setInterval(sendUserList, process.env.INTERVAL);
 });
