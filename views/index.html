@@ -6,12 +6,13 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <h1>Ably Delta Conpression Example</h1>
+    <h1>Ably delta compression demo</h1>
     <ul>
-      <li><b>Status:</b><p id="status">Hello</p></li>
-      <li><b>dataBlock:</b><p id="dataBlock">Data Block</p></li>
-      <li><b>compressedData:</b><p id="compressedData">compressedData</p></li>
-      <li><b>uncompressedData:</b><p id="uncompressedData">uncompressedData</p></li>
+      <li><b>Status</b>: <p id="status">Hello</p></li>
+      <li><b>Users online</b>: <p id="online">online</p></li>
+      <li><b>Number of users online</b>: <p id="number-online">number online</p></li>
+      <li><b>Compressed data</b>: <p id="data">data</p></li>
+      <li><b>Uncompressed data</b>: <p id="uncompressedData">uncompressedData</p></li>
     </ul>
 
     <script>
@@ -35,18 +36,20 @@
         }
       });
 
-      channel.subscribe("dataBlock", (message) => {
-        document.getElementById("dataBlock").innerHTML = message.data;
+      channel.subscribe("userlist", (message) => {
+        console.log('message data: --> ' + message.data);
+        document.getElementById("online").innerHTML = message.data;
+        document.getElementById("number-online").innerHTML = message.data.length;
         ably.stats({ unit: 'minute' }, (err, resultPage) => {
           
-          const compressedData = resultPage.items[0].all.messages.data; 
+          const data = resultPage.items[0].all.messages.data; 
           const uncompressedData = resultPage.items[0].all.messages.uncompressedData;
           
-          document.getElementById("compressedData").innerHTML = compressedData;
+          document.getElementById("data").innerHTML = data;
           document.getElementById("uncompressedData").innerHTML = uncompressedData;
           
           console.log(resultPage.items[0]);     // all stats   
-          console.log(compressedData);
+          console.log(data);
           console.log(uncompressedData);
         });
       });
