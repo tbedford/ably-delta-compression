@@ -22,7 +22,11 @@ npm start
 
 Point your browser at http://localhost:9000 this displays a simple UI to demonstrate compression levels.
 
+## Node client
+
 A node client (`node-client.js`) is also provided, so you can test from the command line.
+
+To test the node client, run the server with `npm start`, and then in another tab run `node node-client.js`. The client will print logging and other debug information.
 
 ## See also
 
