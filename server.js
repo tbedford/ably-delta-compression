@@ -1,12 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const randomWords = require('random-words');
+const channeName = "ably-data-server";
 
 require('dotenv').config()
 const key = process.env.API_KEY;
 
-const ably = new require("ably").Rest(key);
-const channel = ably.channels.get("ably-data-server");
+const rest = new require("ably").Rest(key);
+const channel = rest.channels.get(channelName);
 
 const app = express();
 app.use(bodyParser.json());
@@ -23,7 +24,7 @@ app.get("/auth", (req, res) => {
     ttl: 1000 * 60 * 60 * 1, // one hour
     clientId: "client1@example.com",
   };
-  ably.auth.createTokenRequest(tokenParams, (err, tokenRequest) => {
+  rest.auth.createTokenRequest(tokenParams, (err, tokenRequest) => {
     if (err) {
       console.error("Bang");
       res
