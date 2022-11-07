@@ -11,11 +11,14 @@ const realtime = new Ably.Realtime({
     log: { level: 4 }
 });
 
-const channel = realtime.channels.get('ably-data-server', {
+const channelOptions = {
     params: {
         delta: 'vcdiff'
     }
-})
+};
+
+const channel = realtime.channels.get('ably-data-server');
+channel.setOptions(channelOptions);
 
 channel.subscribe(msg => console.log("Received message: ", msg));
 
